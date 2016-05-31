@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/acwtools/simpleloremimage.svg?branch=master)](https://travis-ci.org/acwtools/simpleloremimage)
+
 # simple lorem image
 
 ## Installation and Usage
