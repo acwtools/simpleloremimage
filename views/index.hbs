@@ -1,0 +1,80 @@
+<h1>simple lorem image</h1>
+
+<h2>Installation and Usage</h2>
+<h3>Setup</h3>
+<ul>
+<li>Clone repository from github</li>
+</ul>
+
+<pre>
+      $ git clone https://github.com/acwtools/simpleloremimage
+</pre>
+<ul>
+<li>Install dependencies via npm</li>
+</ul>
+
+<pre>
+      $ cd simpleloremimage && npm install
+</pre>
+<ul>
+<li>copy your image files to source_image directory</li>
+<li>run server</li>
+</ul>
+
+<pre>
+      $ npm start
+</pre>
+<h3>Use</h3>
+<ul>
+<li>make sure you have images in source_image directory</li>
+</ul>
+<pre>
+      $ cd simpleloremimage
+      $ ls
+        beach.png city.png city2.png city3.png sports.png sports2.png
+</pre>
+<ul>
+<li>call server with desired size and limit result with topic parameter</li>
+</ul>
+<pre>
+      http://localhost:3000/:width/:height/:topic?
+</pre>
+<p>Example</p>
+<pre>
+      $ curl http://localhost:3000/320/250/city
+</pre>
+<p>The example would only return image with the string "city" in their names.</p>
+
+<h2>Features</h2>
+<ul>
+<li>Filters images in source directory by topic</li>
+<li>Shuffles the resulting list</li>
+<li>Any scaled image is resized just once</li>
+<li>Redirects to the static path of the resulting image</li>
+<li>Images are cacheable in browser</li>
+</ul>
+
+<h2>Known issues</h2>
+<ul>
+<li>The app is as simple as possible</li>
+<li>There is no security at all, see below</li>
+<li>There is no support for uploading images but than can be archived with any third party image upload oder (s)ftp tool</li>
+<li>There is no support for subdirectories</li>
+<li>The app might get slow with lots of images</li>
+</ul>
+
+<h2>Security</h2>
+<ul>
+<li>There is no security at all and there won't be in a foreseeable future, so use with care!</li>
+<li>The app is intended for local development only, behind a firewall or in a virtual machine</li>
+<li>Any one could create as many sizes of each image as possible, flooding your hdd</li>
+</ul>
+
+<h2>Why</h2>
+<ul>
+<li>Existing online services did not satisfy the following requirements
+<ul>
+<li>Accurate, presentable images for each relevant topic</li>
+<li>Fast, without impact on page load</li>
+</ul>
+</ul>
