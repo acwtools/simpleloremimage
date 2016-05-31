@@ -38,6 +38,7 @@ The example would only return image with the string "city" in their names.
 
 ## Known issues
 * The app is as simple as possible
+* Requires Node.js 6
 * There is no security at all, see below
 * There is no support for uploading images but than can be archived with any third party image upload oder (s)ftp tool
 * There is no support for subdirectories
