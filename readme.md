@@ -3,6 +3,10 @@
 # simple lorem image
 
 ## Installation and Usage
+### Prerequisites
+* Node.js Version 6+
+* Image-Magick
+
 ### Setup
 * Clone repository from github
 
@@ -23,9 +27,11 @@
 * call server with desired size and limit result with topic parameter
 
       http://localhost:3000/:width/:height/:topic?
-  Example
+  Examples
 
       $ curl http://localhost:3000/320/250/city
+
+      <img src="http://localhost:3000/640/480/city" width="640" height="480" alt="Simple Lorem Image" />
 
 The example would only return image with the string "city" in their names.
 
@@ -40,7 +46,7 @@ The example would only return image with the string "city" in their names.
 * The app is as simple as possible
 * Requires Node.js 6
 * There is no security at all, see below
-* There is no support for uploading images but than can be archived with any third party image upload oder (s)ftp tool
+* There is no support for uploading images but that can be archived with any third party image upload oder (s)ftp tool
 * There is no support for subdirectories
 * The app might get slow with lots of images
 
