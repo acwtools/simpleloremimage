@@ -24,7 +24,7 @@
       $ cd simpleloremimage
       $ ls
         beach.png city.png city2.png city3.png sports.png sports2.png
-* call server with desired size and limit result with topic parameter
+* call server with desired image size and limit result set with topic parameter
 
       http://localhost:3000/:width/:height/:topic?
   Examples
@@ -33,7 +33,7 @@
 
       <img src="http://localhost:3000/640/480/city" width="640" height="480" alt="Simple Lorem Image" />
 
-The example would only return image with the string "city" in their names.
+This example would return only images with the string "city" in their names.
 
 ## Features
 * Filters images in source directory by topic
@@ -46,14 +46,14 @@ The example would only return image with the string "city" in their names.
 * The app is as simple as possible
 * Requires Node.js 6
 * There is no security at all, see below
-* There is no support for uploading images but that can be archived with any third party image upload oder (s)ftp tool
+* There is no support for uploading images but can be archived with any third party image upload or (s)ftp tool
 * There is no support for subdirectories
 * The app might get slow with lots of images
 
 ## Security
 * There is no security at all and there won't be in a foreseeable future, so use with care!
 * The app is intended for local development only, behind a firewall or in a virtual machine
-* Any one could create as many sizes of each image as possible, flooding your hdd
+* Anyone could create as many sizes of each image as possible, flooding your hdd
 
 ## Why
 * Existing online services did not satisfy the following requirements
