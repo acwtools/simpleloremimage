@@ -127,8 +127,8 @@ describe('Image', function () {
                     'imagemagick-stream': sinon.expectation.create('imagemagick-stream').never()
                 });
             });
-            it('should return one of "aaa.png", "bbb.png", "ccc.png" randomly', function () {
-                return image.getRandomImage('').should.eventually.to.be.oneOf(["ddd.png", "bbb.png", "fff.png"]);
+            it('should return one of "ddd.png", "eee.png", "fff.png" randomly', function () {
+                return image.getRandomImage('').should.eventually.to.be.oneOf(["ddd.png", "eee.png", "fff.png"]);
             });
         });
         context('dir contains files "test-aaa.png", "test-bbbxxx.png", "testbbc-123.png", "444ccc.png", "ddd.png" subject is "bb"', function () {

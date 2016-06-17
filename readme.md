@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/acwtools/simpleloremimage.svg?branch=master)](https://travis-ci.org/acwtools/simpleloremimage)
+[![Coverage Status](https://coveralls.io/repos/github/acwtools/simpleloremimage/badge.svg?branch=master)](https://coveralls.io/github/acwtools/simpleloremimage?branch=master)
+
 
 # simple lorem image
 
