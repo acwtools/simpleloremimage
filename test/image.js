@@ -35,6 +35,17 @@ var chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 
 describe('Image', function () {
+    context('fs not injected in constructor', function(){
+        it('should throw an exception "Required dependency fs not set"', function () {
+            return expect(function(){ new Image({'imagemagick-stream' : {}})}).to.throw('Required dependency fs not set');
+        });
+    });
+    context('imagemagick-stream not injected in constructor', function(){
+        it('should throw an exception "Required dependency imagemagick-stream not set"', function () {
+            return expect(function(){ new Image({'fs' : {}})}).to.throw('Required dependency imagemagick-stream not set');
+        });
+    });
+
     describe('getRandomImage', function () {
         context('dir not readable with fs', function () {
             var image;
@@ -104,6 +115,20 @@ describe('Image', function () {
             });
             it('should return one of "aaa.png", "bbb.png", "ccc.png" randomly', function () {
                 return image.getRandomImage('dd').should.eventually.to.be.oneOf(["aaa.png", "bbb.png", "ccc.png"]);
+            });
+        });
+        context('dir contains files "ddd.png", "eee.png", "fff.png", subject is "", function()', function () {
+            var image;
+            before(function () {
+                image = new Image({
+                    'fs': {
+                        'readdir': sinon.stub().callsArgWith(1, null, ["ddd.png", "eee.png", "fff.png"])
+                    },
+                    'imagemagick-stream': sinon.expectation.create('imagemagick-stream').never()
+                });
+            });
+            it('should return one of "aaa.png", "bbb.png", "ccc.png" randomly', function () {
+                return image.getRandomImage('').should.eventually.to.be.oneOf(["ddd.png", "bbb.png", "fff.png"]);
             });
         });
         context('dir contains files "test-aaa.png", "test-bbbxxx.png", "testbbc-123.png", "444ccc.png", "ddd.png" subject is "bb"', function () {

@@ -29,22 +29,22 @@ class Image {
     constructor(settings) {
         if (settings.fs) {
             this.fs = settings.fs;
-        }
-        else {
-            throw new Exception('Need fs');
+        } else {
+            throw new Error('Required dependency fs not set');
         }
         if (settings['imagemagick-stream']) {
             this.im = settings['imagemagick-stream'];
+        } else {
+            throw new Error('Required dependency imagemagick-stream not set');
         }
     }
 
     getRandomImage(subject = '') {
         return new Promise((resolve, reject) => {
-            this.fs.readdir(__dirname + '/../source_images', function (err, files) {
+            this.fs.readdir(__dirname + '/../source_images', (err, files) => {
                 if (err) {
                     reject('dir reading error');
-                }
-                else {
+                } else {
                     files = files.filter((name) => {
                         return name[0] != '.';
                     });
@@ -59,7 +59,7 @@ class Image {
                         }
                         /* If more then one file, shuffle files */
                         if (files.length > 1) {
-                            let i = 0, j = 0, temp = null;
+                            let i, j = 0, temp = null;
 
                             for (i = files.length - 1; i > 0; i -= 1) {
                                 j = Math.floor(Math.random() * (i + 1));
@@ -69,8 +69,7 @@ class Image {
                             }
                         }
                         resolve(files[0]);
-                    }
-                    else {
+                    } else {
                         reject('dir empty');
                     }
                 }
@@ -80,7 +79,7 @@ class Image {
 
     getImage(x, y, subject = '') {
         return new Promise((resolve, reject) => {
-            var imageFile = this.getRandomImage(subject).then((imageFile) => {
+            this.getRandomImage(subject).then((imageFile) => {
 
                     let extension = imageFile.match(/\.\w+$/);
                     let baseName = imageFile.replace(extension, '');
@@ -99,8 +98,7 @@ class Image {
                             if (err.code == 'EEXIST') {
                                 /* File is already converted, we are good */
                                 resolve(outputName);
-                            }
-                            else {
+                            } else {
                                 reject(err);
                             }
                         });
@@ -115,7 +113,7 @@ class Image {
                 },
                 (reason) => {
                     reject(reason);
-                }).catch(function (reason) {
+                }).catch((reason) => {
                 reject(reason);
             });
         });
