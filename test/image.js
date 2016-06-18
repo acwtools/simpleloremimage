@@ -103,7 +103,7 @@ describe('Image', function () {
                 return image.getRandomImage('bb').should.eventually.equal('bbb.png');
             });
         });
-        context('dir contains files "aaa.png", "bbb.png", "ccc.png", subject is "dd", function()', function () {
+        context('dir contains files "aaa.png", "bbb.png", "ccc.png", subject is "dd"', function () {
             var image;
             before(function () {
                 image = new Image({
@@ -117,7 +117,7 @@ describe('Image', function () {
                 return image.getRandomImage('dd').should.eventually.to.be.oneOf(["aaa.png", "bbb.png", "ccc.png"]);
             });
         });
-        context('dir contains files "ddd.png", "eee.png", "fff.png", subject is "", function()', function () {
+        context('dir contains files "ddd.png", "eee.png", "fff.png", subject is ""', function () {
             var image;
             before(function () {
                 image = new Image({
