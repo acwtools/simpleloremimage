@@ -1,27 +1,29 @@
-var express = require('express');
-var image = require('./../models/image');
-var fs = require('fs');
-var im = require('imagemagick-stream');
-var router = express.Router();
+const express = require('express');
+const Image = require('./../models/image');
+const fs = require('fs');
+const path = require('path');
+const im = require('imagemagick-stream');
 
+const router = express.Router();
 
-var handler = new image({
-    'fs' : fs,
-    'imagemagick-stream' : im
+const handler = new Image({
+  fs,
+  path,
+  'imagemagick-stream': im,
 });
-/* GET Image. */
-router.get('/:width/:height/:type?', function(req, res, next) {
-    var width = req.params.width;
-    var height = req.params.height;
-    var type = req.params.type;
-    
-    handler.getImage(width, height, type).then(function (fileName) {
-        res.redirect(302, fileName);
-    }, function (reason) {
-        console.log('Reason: %s', reason);
-        next();
-    }).catch(next);
 
+/* GET Image. */
+router.get('/:width/:height/:type?', (req, res, next) => {
+  const width = req.params.width;
+  const height = req.params.height;
+  const type = req.params.type;
+
+  handler.getImage(width, height, type).then((fileName) => {
+    res.redirect(302, fileName);
+  }, (reason) => {
+    console.log('Reason: %s', reason); // eslint-disable-line no-console
+    next();
+  }).catch(next);
 });
 
 module.exports = router;

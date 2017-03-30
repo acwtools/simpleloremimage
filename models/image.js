@@ -26,123 +26,136 @@
 /**
  * @exports Image
  */
-"use strict";
 
 /**
  *  Image Class
  */
 class Image {
-    /**
-     *
-     * @param {object} settings
-     * @param {fs} settings.fs NodeJS FileSystem handler
-     * @param {imagemagick-stream} settings.imagemagick-stream imagemagick wrapper for NodeJS
-     */
-    constructor(settings) {
-        if (settings.fs) {
-            this.fs = settings.fs;
-        } else {
-            throw new Error('Required dependency fs not set');
-        }
-        if (settings['imagemagick-stream']) {
-            this.im = settings['imagemagick-stream'];
-        } else {
-            throw new Error('Required dependency imagemagick-stream not set');
-        }
+  /**
+   *
+   * @param {object} dependencies Dependencies
+   * @param {fs} dependencies.fs NodeJS FileSystem handler
+   * @param {path} dependencies.path NodeJS Path handler
+   * @param {imagemagick-stream} dependencies.imagemagick-stream imagemagick wrapper for NodeJS
+   */
+  constructor(dependencies) {
+    if (dependencies.fs) {
+      /**
+       * @type {fs} filesystem
+       */
+      this.fs = dependencies.fs;
+    } else {
+      throw new Error('Required dependency fs not set');
     }
-
-    /**
-     * Get a random image from the source directory
-     * @param {string} subject string to filter the images in the source directory
-     * @returns {Promise}
-     */
-    getRandomImage(subject = '') {
-        return new Promise((resolve, reject) => {
-            this.fs.readdir(__dirname + '/../source_images', (err, files) => {
-                if (err) {
-                    reject('dir reading error');
-                } else {
-                    files = files.filter((name) => {
-                        return name[0] != '.';
-                    });
-                    if (files.length > 0) {
-                        if (subject != '') {
-                            let matching = files.filter((name) => {
-                                return name.includes(subject);
-                            });
-                            if (matching.length > 0) {
-                                files = matching;
-                            }
-                        }
-                        /* If more then one file, shuffle files */
-                        if (files.length > 1) {
-                            let i, j = 0, temp = null;
-
-                            for (i = files.length - 1; i > 0; i -= 1) {
-                                j = Math.floor(Math.random() * (i + 1));
-                                temp = files[i];
-                                files[i] = files[j];
-                                files[j] = temp;
-                            }
-                        }
-                        resolve(files[0]);
-                    } else {
-                        reject('dir empty');
-                    }
-                }
-            });
-        });
-    };
-
-    /**
-     * Look up an image via getRandomImage(subject) and resize it.
-     * Return path to the image.
-     * @param {number} x width of the desired image
-     * @param {number} y height of the desired image
-     * @param {string} subject string to filter the images
-     * @returns {Promise}
-     */
-    getImage(x, y, subject = '') {
-        return new Promise((resolve, reject) => {
-            this.getRandomImage(subject).then((imageFile) => {
-
-                    let extension = imageFile.match(/\.\w+$/);
-                    let baseName = imageFile.replace(extension, '');
-                    var inputFile = __dirname + '/../source_images/' + imageFile;
-                    var outputName = '/loremimages/' + baseName + '-' + x + '_' + y + extension;
-                    var outputFile = __dirname + '/../public/' + outputName;
-
-                    var read = this.fs.createReadStream(inputFile);
-                    read.on('error', () => {
-                        reject('image does not exist');
-                    });
-                    read.on('open', () => {
-                        var write = this.fs.createWriteStream(outputFile, {'flags': 'wx'});
-                        /* Fail when file exists */
-                        write.on('error', (err) => {
-                            if (err.code == 'EEXIST') {
-                                /* File is already converted, we are good */
-                                resolve(outputName);
-                            } else {
-                                reject(err);
-                            }
-                        });
-                        write.on('open', () => {
-                            const resize = this.im().resize(x + 'x' + y + '!').quality(90);
-                            read.pipe(resize).pipe(write);
-                        });
-                        write.on('finish', () => {
-                            resolve(outputName);
-                        })
-                    });
-                },
-                (reason) => {
-                    reject(reason);
-                }).catch((reason) => {
-                reject(reason);
-            });
-        });
+    if (dependencies.path) {
+      /**
+       * @type {path} Path
+       */
+      this.path = dependencies.path;
+    } else {
+      throw new Error('Required dependency path not set');
     }
+    if (dependencies['imagemagick-stream']) {
+      /**
+       * @type {imagemagick-stream} Image-Magick
+       */
+      this.im = dependencies['imagemagick-stream'];
+    } else {
+      throw new Error('Required dependency imagemagick-stream not set');
+    }
+  }
+
+  /**
+   * Get a random image from the source directory
+   * @param {string} subject string to filter the images in the source directory
+   * @returns {Promise} Promise wrapping file-list
+   */
+  getRandomImage(subject = '') {
+    return new Promise((resolve, reject) => {
+      this.fs.readdir(this.path.join(__dirname, '/../source_images'), (err, files) => {
+        if (err) {
+          reject('dir reading error');
+        } else {
+          let imageFiles = files.filter(name => name[0] !== '.');
+          if (imageFiles.length > 0) {
+            if (subject !== '') {
+              const matching = imageFiles.filter(name => name.includes(subject));
+              if (matching.length > 0) {
+                imageFiles = matching;
+              }
+            }
+            /* If more then one file, shuffle files */
+            if (imageFiles.length > 1) {
+              let i;
+              let j = 0;
+              let temp = null;
+
+              for (i = imageFiles.length - 1; i > 0; i -= 1) {
+                j = Math.floor(Math.random() * (i + 1));
+                temp = imageFiles[i];
+                imageFiles[i] = imageFiles[j];
+                imageFiles[j] = temp;
+              }
+            }
+            resolve(imageFiles[0]);
+          } else {
+            reject('dir empty');
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * Look up an image via getRandomImage(subject) and resize it.
+   * Return path to the image.
+   * @param {number} x width of the desired image
+   * @param {number} y height of the desired image
+   * @param {string} subject string to filter the images
+   * @returns {Promise} Promise wrapping image name
+   */
+  getImage(x, y, subject = '') {
+    return new Promise((resolve, reject) => {
+      this.getRandomImage(subject).then((imageFile) => {
+        const extension = imageFile.match(/\.\w+$/);
+        const baseName = imageFile.replace(extension, '');
+        const inputFile = this.path.join(__dirname, '/../source_images/', imageFile);
+        const outputName = `${baseName}-${x}_${y}${extension}`;
+        const outputLocation = this.path.join('/loremimages/', outputName);
+        const outputFile = this.path.join(__dirname, '/../public/', outputLocation);
+
+        const read = this.fs.createReadStream(inputFile);
+        read.on('error', () => {
+          reject('image does not exist');
+        });
+        read.on('open', () => {
+          const write = this.fs.createWriteStream(outputFile, { flags: 'wx' });
+          /* Fail when file exists */
+          write.on('error', (err) => {
+            if (err.code === 'EEXIST') {
+              /* File is already converted, we are good */
+              resolve(outputLocation);
+            } else {
+              reject(err);
+            }
+          });
+          write.on('open', () => {
+            const resize = this.im().resize(`${x}x${y}!`).quality(90);
+            read.pipe(resize).pipe(write);
+          });
+          write.on('finish', () => {
+            resolve(outputLocation);
+          });
+        });
+      },
+      (reason) => {
+        reject(reason);
+      }).catch((reason) => {
+        reject(reason);
+      });
+    });
+  }
 }
 
-exports = module.exports = Image;
+module.exports = Image;
+exports = module.exports;

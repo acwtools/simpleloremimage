@@ -1,0 +1,9 @@
+bin/
+docs/
+#exlude not working
+#routes/
+#!routes/image.js
+#therefore ignore files individually
+routes/index.js
+routes/users.js
+app.js
